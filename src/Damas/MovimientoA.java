@@ -67,11 +67,8 @@ public class MovimientoA extends Main implements Comparable{
         int resultado = 0;
         
         if(this.MovimientoA < ((MovimientoA)o).MovimientoA){
-             System.out.println("algo"+resultado);
-           resultado =  resultado +1;
-        }else if(this.MovimientoA > ((MovimientoA)o).MovimientoA){
-             System.out.println("tonterias"+resultado);
-          resultado =  resultado +1;
+           resultado =  resultado + 1;
+           System.out.println(" movimientoA resultado " + MovimientoA);
         }
         return resultado+1;
     }
