@@ -3,6 +3,15 @@ package Damas;
 import static Damas.Main.HEIGHT;
 import static Damas.Main.TAMANY;
 import static Damas.Main.WIDTH;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.ListIterator;
+import java.util.Map;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -20,8 +29,14 @@ import javafx.scene.effect.DropShadow;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class Main extends Application {
 
+public class Main extends Application {
+    
+    private static final String HOST = "172.20.11.237"; //localhost
+    private static final int PORT = 1099;
+    private static Registry registre;
+
+    
     int movimientoBlanco = 0;
     int movimientoNegro = 2;
     public static final int TAMANY = 80;
@@ -68,7 +83,6 @@ public class Main extends Application {
 
         ItemsMenu itemOptions = new ItemsMenu("MULTIJUGADOR");
         itemOptions.setOnMouseClicked(event2 -> {
-
 
         });
 
@@ -145,13 +159,13 @@ public class Main extends Application {
                 moveBlanco.moveBlanco();
                 movimientoBlanco = movimientoBlanco + 1;
                 movimientoNegro = movimientoNegro - 1;
-                System.out.println("movimientoblanco" + movimientoBlanco);
+
             } else if (negro.compareTo(blanco) > movimientoBlanco) {
                 ClaseGenerica<String> moveNegro = new ClaseGenerica<String>("moveNegro");
                 moveNegro.moveNegro();
                 movimientoNegro = movimientoNegro + 1;
                 movimientoBlanco = movimientoBlanco - 1;
-                System.out.println("movimientoNegro" + movimientoNegro);
+
             }
             return new ResultadoMovimiento(TiposMovimiento.NORMAL);
 
@@ -169,13 +183,13 @@ public class Main extends Application {
                 moveBlanco.moveBlanco();
                 movimientoBlanco = movimientoBlanco + 1;
                 movimientoNegro = movimientoNegro - 1;
-                System.out.println("movimientoblanco" + movimientoBlanco);
+
             } else if (negro.compareTo(blanco) > movimientoBlanco) {
                 ClaseGenerica<String> moveNegro = new ClaseGenerica<String>("moveNegro");
                 moveNegro.moveNegro();
                 movimientoNegro = movimientoNegro + 1;
                 movimientoBlanco = movimientoBlanco - 1;
-                System.out.println("movimientoNegro" + movimientoNegro);
+
             }
         }
 
@@ -339,11 +353,47 @@ public class Main extends Application {
             });
         }
     }
+   static Jugador f;
+    public static void main(String[] args) throws RemoteException, NotBoundException {
 
-    public static void main(String[] args) {
+        Jugador f = new Jugador("Marc", 12) {};
+        Jugador t = new Jugador("Víctor", 12) {};
+        Jugador r = new Jugador("Sheng", 12) {};
+        HashSet<Jugador> puntos = new HashSet<>();
+
+        puntos.add((Jugador) f);
+        puntos.add((Jugador) t);
+        puntos.add((Jugador) r);
+        System.out.println("JUGADORES SET:"+puntos.size());
+        Map<Jugador, String> m = new HashMap<>();
+
+        m.put((Jugador) f, "12");
+        m.put((Jugador) t, "12");
+        m.put((Jugador) r, "12");
+
+        System.out.println(m.keySet());
+        System.out.println("JUGADORES:"+m.size());
+
+
+        LinkedList<String> gente = new LinkedList<>();
+        gente.addLast("MARC");
+        gente.addLast("SHENG");
+        gente.addLast("VICTOR");
+
+
+        ListIterator<String> iterador = gente.listIterator(); 
+        iterador.next();
+        iterador.next();
+        iterador.next();
+
+
+        // Imprimimos todos los elementos
+        for(String nombre : gente)
+               System.out.print(nombre + " 12 ");
+        System.out.println();
         launch(args);
-
     }
+
 }
 
 class ClaseGenerica<T> {

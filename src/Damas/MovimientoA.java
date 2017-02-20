@@ -68,7 +68,6 @@ public class MovimientoA extends Main implements Comparable{
         
         if(this.MovimientoA < ((MovimientoA)o).MovimientoA){
            resultado =  resultado + 1;
-           System.out.println(" movimientoA resultado " + MovimientoA);
         }
         return resultado+1;
     }
