@@ -3,6 +3,8 @@ package Damas;
 import static Damas.Main.HEIGHT;
 import static Damas.Main.TAMANY;
 import static Damas.Main.WIDTH;
+import java.io.File;
+import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -28,6 +30,21 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.effect.DropShadow;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Attr;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 
 public class Main extends Application {
@@ -391,6 +408,163 @@ public class Main extends Application {
         for(String nombre : gente)
                System.out.print(nombre + " 12 ");
         System.out.println();
+        
+        try {
+
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
+		// root elements
+		Document doc = docBuilder.newDocument();
+		Element rootElement = doc.createElement("JUEGO");
+		doc.appendChild(rootElement);
+
+		// staff elements
+		Element staff = doc.createElement("jugador");
+		rootElement.appendChild(staff);
+
+		// set attribute to staff element
+		Attr attr = doc.createAttribute("id");
+		attr.setValue("1001");
+		staff.setAttributeNode(attr);
+
+		// shorten way
+		// staff.setAttribute("id", "1");
+
+		// firstname elements
+		Element firstname = doc.createElement("nombre");
+		firstname.appendChild(doc.createTextNode("Victor"));
+		staff.appendChild(firstname);
+
+		// lastname elements
+		Element lastname = doc.createElement("apellido");
+		lastname.appendChild(doc.createTextNode("Marchante"));
+		staff.appendChild(lastname);
+
+		// nickname elements
+		Element nickname = doc.createElement("nick");
+		nickname.appendChild(doc.createTextNode("VictorM"));
+		staff.appendChild(nickname);
+
+		// salary elements
+		Element salary = doc.createElement("puntos");
+		salary.appendChild(doc.createTextNode("12"));
+		staff.appendChild(salary);
+                
+                Element staf = doc.createElement("jugador");
+		rootElement.appendChild(staf);
+
+		// set attribute to staff element
+		Attr att = doc.createAttribute("id");
+		att.setValue("2001");
+		staf.setAttributeNode(att);
+
+		// shorten way
+		// staff.setAttribute("id", "1");
+
+		// firstname elements
+		Element firstnam = doc.createElement("nombre");
+		firstnam.appendChild(doc.createTextNode("Sheng"));
+		staf.appendChild(firstnam);
+
+		// lastname elements
+		Element lastnam = doc.createElement("apellido");
+		lastnam.appendChild(doc.createTextNode("Ye"));
+		staf.appendChild(lastnam);
+
+		// nickname elements
+		Element nicknam = doc.createElement("nick");
+		nicknam.appendChild(doc.createTextNode("ShengY"));
+		staf.appendChild(nicknam);
+
+		// salary elements
+		Element salar = doc.createElement("puntos");
+		salar.appendChild(doc.createTextNode("12"));
+		staf.appendChild(salar);
+                
+                
+                Element sta = doc.createElement("jugador");
+		rootElement.appendChild(sta);
+
+		// set attribute to staff element
+		Attr at = doc.createAttribute("id");
+		at.setValue("3001");
+		sta.setAttributeNode(at);
+
+		// shorten way
+		// staff.setAttribute("id", "1");
+
+		// firstname elements
+		Element firstna = doc.createElement("nombre");
+		firstna.appendChild(doc.createTextNode("Marc"));
+		sta.appendChild(firstna);
+
+		// lastname elements
+		Element lastna = doc.createElement("apellido");
+		lastna.appendChild(doc.createTextNode("Llobera"));
+		sta.appendChild(lastna);
+
+		// nickname elements
+		Element nickna = doc.createElement("nick");
+		nickna.appendChild(doc.createTextNode("MarcL"));
+		sta.appendChild(nickna);
+
+		// salary elements
+		Element sala = doc.createElement("puntos");
+		sala.appendChild(doc.createTextNode("12"));
+		sta.appendChild(sala);
+
+                
+		// write the content into xml file
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		Transformer transformer = transformerFactory.newTransformer();
+		DOMSource source = new DOMSource(doc);
+		StreamResult result = new StreamResult(new File("file2.xml"));
+
+		// Output to console for testing
+		// StreamResult result = new StreamResult(System.out);
+
+		transformer.transform(source, result);
+
+		System.out.println("File saved!");
+
+	  } catch (ParserConfigurationException | TransformerException pce) {
+	  }
+        try {
+               File fXmlFile = new File("C:\\Users\\victor\\Documents\\NetBeansProjects\\Damas3\\damas3/file2.xml");
+		
+	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+	Document doc = dBuilder.parse(fXmlFile);
+
+	
+	doc.getDocumentElement().normalize();
+
+	NodeList nList = doc.getElementsByTagName("jugador");
+
+	System.out.println("----------------------------");
+
+	for (int temp = 0; temp < nList.getLength(); temp++) {
+
+		Node nNode = nList.item(temp);
+
+		System.out.println("\nCurrent Element :" + nNode.getNodeName());
+
+		if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+
+			Element eElement = (Element) nNode;
+
+			System.out.println("Jugador id : " + eElement.getAttribute("id"));
+			System.out.println("Nombre : " + eElement.getElementsByTagName("nombre").item(0).getTextContent());
+			System.out.println("Apellido : " + eElement.getElementsByTagName("apellido").item(0).getTextContent());
+			System.out.println("Nick  : " + eElement.getElementsByTagName("nick").item(0).getTextContent());
+			System.out.println("Puntos : " + eElement.getElementsByTagName("puntos").item(0).getTextContent());
+
+		}
+	}
+    } catch (ParserConfigurationException | SAXException | IOException | DOMException e) {
+    }
+        
         launch(args);
     }
 
