@@ -4,11 +4,8 @@ import static Damas.Main.HEIGHT;
 import static Damas.Main.TAMANY;
 import static Damas.Main.WIDTH;
 import java.io.File;
-import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -45,15 +42,14 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.Socket;
+import javax.swing.JOptionPane;
 
 public class Main extends Application {
-    
-    private static final String HOST = "172.20.11.237"; //localhost
-    private static final int PORT = 1099;
-    private static Registry registre;
 
-    
     int movimientoBlanco = 0;
     int movimientoNegro = 2;
     public static final int TAMANY = 80;
@@ -74,7 +70,7 @@ public class Main extends Application {
 
         ItemsMenu itemContador = new ItemsMenu("CONTADOR");
         itemContador.setOnMouseClicked(event3 -> {
-            Label secondLabel = new Label("Not yet implemented");
+            Label secondLabel = new Label("Marc llobera 12 puntos \n Victor Marchante 12 puntos \n Sheng Ye 12 puntos");
             StackPane secondaryLayout = new StackPane();
             secondaryLayout.getChildren().add(secondLabel);
             Scene secondScene = new Scene(secondaryLayout, 400, 110);
@@ -95,11 +91,6 @@ public class Main extends Application {
             } else {
                 menu.show();
             }
-
-        });
-
-        ItemsMenu itemOptions = new ItemsMenu("MULTIJUGADOR");
-        itemOptions.setOnMouseClicked(event2 -> {
 
         });
 
@@ -126,7 +117,6 @@ public class Main extends Application {
         menu = new CajaMenu("LAS DAMAS",
                 itemNewGame,
                 itemContador,
-                itemOptions,
                 itemCredits,
                 new ItemsMenu(""),
                 itemQuit);
@@ -370,18 +360,32 @@ public class Main extends Application {
             });
         }
     }
-   static Jugador f;
-    public static void main(String[] args) throws RemoteException, NotBoundException {
 
-        Jugador f = new Jugador("Marc", 12) {};
-        Jugador t = new Jugador("Víctor", 12) {};
-        Jugador r = new Jugador("Sheng", 12) {};
+    static Jugador f;
+
+    public static void main(String[] args) throws IOException, RemoteException, NotBoundException {
+
+        String serverAddress = JOptionPane.showInputDialog(
+                "Inserta la ip a la que quieres conectar\n"
+                + "conectarse al puerto 9090:");
+        Socket s = new Socket(serverAddress, 9090);
+        BufferedReader input = new BufferedReader(new InputStreamReader(s.getInputStream()));
+        String answer = input.readLine();
+        JOptionPane.showMessageDialog(null, answer);
+
+
+        Jugador f = new Jugador("Marc", 12) {
+        };
+        Jugador t = new Jugador("Víctor", 12) {
+        };
+        Jugador r = new Jugador("Sheng", 12) {
+        };
         HashSet<Jugador> puntos = new HashSet<>();
 
         puntos.add((Jugador) f);
         puntos.add((Jugador) t);
         puntos.add((Jugador) r);
-        System.out.println("JUGADORES SET:"+puntos.size());
+        System.out.println("JUGADORES SET:" + puntos.size());
         Map<Jugador, String> m = new HashMap<>();
 
         m.put((Jugador) f, "12");
@@ -389,182 +393,173 @@ public class Main extends Application {
         m.put((Jugador) r, "12");
 
         System.out.println(m.keySet());
-        System.out.println("JUGADORES:"+m.size());
-
+        System.out.println("JUGADORES:" + m.size());
 
         LinkedList<String> gente = new LinkedList<>();
         gente.addLast("MARC");
         gente.addLast("SHENG");
         gente.addLast("VICTOR");
 
-
-        ListIterator<String> iterador = gente.listIterator(); 
+        ListIterator<String> iterador = gente.listIterator();
         iterador.next();
         iterador.next();
         iterador.next();
-
 
         // Imprimimos todos los elementos
-        for(String nombre : gente)
-               System.out.print(nombre + " 12 ");
+        for (String nombre : gente) {
+            System.out.print(nombre + " 12 ");
+        }
         System.out.println();
-        
+
         try {
 
-		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
-		// root elements
-		Document doc = docBuilder.newDocument();
-		Element rootElement = doc.createElement("JUEGO");
-		doc.appendChild(rootElement);
+            // root elements
+            Document doc = docBuilder.newDocument();
+            Element rootElement = doc.createElement("JUEGO");
+            doc.appendChild(rootElement);
 
-		// staff elements
-		Element staff = doc.createElement("jugador");
-		rootElement.appendChild(staff);
+            // staff elements
+            Element staff = doc.createElement("jugador");
+            rootElement.appendChild(staff);
 
-		// set attribute to staff element
-		Attr attr = doc.createAttribute("id");
-		attr.setValue("1001");
-		staff.setAttributeNode(attr);
+            // set attribute to staff element
+            Attr attr = doc.createAttribute("id");
+            attr.setValue("1001");
+            staff.setAttributeNode(attr);
 
-		// shorten way
-		// staff.setAttribute("id", "1");
+            // shorten way
+            // staff.setAttribute("id", "1");
+            // firstname elements
+            Element firstname = doc.createElement("nombre");
+            firstname.appendChild(doc.createTextNode("Victor"));
+            staff.appendChild(firstname);
 
-		// firstname elements
-		Element firstname = doc.createElement("nombre");
-		firstname.appendChild(doc.createTextNode("Victor"));
-		staff.appendChild(firstname);
+            // lastname elements
+            Element lastname = doc.createElement("apellido");
+            lastname.appendChild(doc.createTextNode("Marchante"));
+            staff.appendChild(lastname);
 
-		// lastname elements
-		Element lastname = doc.createElement("apellido");
-		lastname.appendChild(doc.createTextNode("Marchante"));
-		staff.appendChild(lastname);
+            // nickname elements
+            Element nickname = doc.createElement("nick");
+            nickname.appendChild(doc.createTextNode("VictorM"));
+            staff.appendChild(nickname);
 
-		// nickname elements
-		Element nickname = doc.createElement("nick");
-		nickname.appendChild(doc.createTextNode("VictorM"));
-		staff.appendChild(nickname);
+            // salary elements
+            Element salary = doc.createElement("puntos");
+            salary.appendChild(doc.createTextNode("12"));
+            staff.appendChild(salary);
 
-		// salary elements
-		Element salary = doc.createElement("puntos");
-		salary.appendChild(doc.createTextNode("12"));
-		staff.appendChild(salary);
-                
-                Element staf = doc.createElement("jugador");
-		rootElement.appendChild(staf);
+            Element staf = doc.createElement("jugador");
+            rootElement.appendChild(staf);
 
-		// set attribute to staff element
-		Attr att = doc.createAttribute("id");
-		att.setValue("2001");
-		staf.setAttributeNode(att);
+            // set attribute to staff element
+            Attr att = doc.createAttribute("id");
+            att.setValue("2001");
+            staf.setAttributeNode(att);
 
-		// shorten way
-		// staff.setAttribute("id", "1");
+            // shorten way
+            // staff.setAttribute("id", "1");
+            // firstname elements
+            Element firstnam = doc.createElement("nombre");
+            firstnam.appendChild(doc.createTextNode("Sheng"));
+            staf.appendChild(firstnam);
 
-		// firstname elements
-		Element firstnam = doc.createElement("nombre");
-		firstnam.appendChild(doc.createTextNode("Sheng"));
-		staf.appendChild(firstnam);
+            // lastname elements
+            Element lastnam = doc.createElement("apellido");
+            lastnam.appendChild(doc.createTextNode("Ye"));
+            staf.appendChild(lastnam);
 
-		// lastname elements
-		Element lastnam = doc.createElement("apellido");
-		lastnam.appendChild(doc.createTextNode("Ye"));
-		staf.appendChild(lastnam);
+            // nickname elements
+            Element nicknam = doc.createElement("nick");
+            nicknam.appendChild(doc.createTextNode("ShengY"));
+            staf.appendChild(nicknam);
 
-		// nickname elements
-		Element nicknam = doc.createElement("nick");
-		nicknam.appendChild(doc.createTextNode("ShengY"));
-		staf.appendChild(nicknam);
+            // salary elements
+            Element salar = doc.createElement("puntos");
+            salar.appendChild(doc.createTextNode("12"));
+            staf.appendChild(salar);
 
-		// salary elements
-		Element salar = doc.createElement("puntos");
-		salar.appendChild(doc.createTextNode("12"));
-		staf.appendChild(salar);
-                
-                
-                Element sta = doc.createElement("jugador");
-		rootElement.appendChild(sta);
+            Element sta = doc.createElement("jugador");
+            rootElement.appendChild(sta);
 
-		// set attribute to staff element
-		Attr at = doc.createAttribute("id");
-		at.setValue("3001");
-		sta.setAttributeNode(at);
+            // set attribute to staff element
+            Attr at = doc.createAttribute("id");
+            at.setValue("3001");
+            sta.setAttributeNode(at);
 
-		// shorten way
-		// staff.setAttribute("id", "1");
+            // shorten way
+            // staff.setAttribute("id", "1");
+            // firstname elements
+            Element firstna = doc.createElement("nombre");
+            firstna.appendChild(doc.createTextNode("Marc"));
+            sta.appendChild(firstna);
 
-		// firstname elements
-		Element firstna = doc.createElement("nombre");
-		firstna.appendChild(doc.createTextNode("Marc"));
-		sta.appendChild(firstna);
+            // lastname elements
+            Element lastna = doc.createElement("apellido");
+            lastna.appendChild(doc.createTextNode("Llobera"));
+            sta.appendChild(lastna);
 
-		// lastname elements
-		Element lastna = doc.createElement("apellido");
-		lastna.appendChild(doc.createTextNode("Llobera"));
-		sta.appendChild(lastna);
+            // nickname elements
+            Element nickna = doc.createElement("nick");
+            nickna.appendChild(doc.createTextNode("MarcL"));
+            sta.appendChild(nickna);
 
-		// nickname elements
-		Element nickna = doc.createElement("nick");
-		nickna.appendChild(doc.createTextNode("MarcL"));
-		sta.appendChild(nickna);
+            // salary elements
+            Element sala = doc.createElement("puntos");
+            sala.appendChild(doc.createTextNode("12"));
+            sta.appendChild(sala);
 
-		// salary elements
-		Element sala = doc.createElement("puntos");
-		sala.appendChild(doc.createTextNode("12"));
-		sta.appendChild(sala);
+            // write the content into xml file
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(new File("file2.xml"));
 
-                
-		// write the content into xml file
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		Transformer transformer = transformerFactory.newTransformer();
-		DOMSource source = new DOMSource(doc);
-		StreamResult result = new StreamResult(new File("file2.xml"));
+            // Output to console for testing
+            // StreamResult result = new StreamResult(System.out);
+            transformer.transform(source, result);
 
-		// Output to console for testing
-		// StreamResult result = new StreamResult(System.out);
+            System.out.println("File saved!");
 
-		transformer.transform(source, result);
-
-		System.out.println("File saved!");
-
-	  } catch (ParserConfigurationException | TransformerException pce) {
-	  }
+        } catch (ParserConfigurationException | TransformerException pce) {
+        }
         try {
-               File fXmlFile = new File("C:\\Users\\victor\\Documents\\NetBeansProjects\\Damas3\\damas3/file2.xml");
-		
-	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-	Document doc = dBuilder.parse(fXmlFile);
+            File fXmlFile = new File("C:\\Users\\weily\\Documents\\NetBeansProjects\\Damas3\\damas3\\src\\Damas/file2.xml");
 
-	
-	doc.getDocumentElement().normalize();
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(fXmlFile);
 
-	NodeList nList = doc.getElementsByTagName("jugador");
+            doc.getDocumentElement().normalize();
 
-	System.out.println("----------------------------");
+            NodeList nList = doc.getElementsByTagName("jugador");
 
-	for (int temp = 0; temp < nList.getLength(); temp++) {
+            System.out.println("----------------------------");
 
-		Node nNode = nList.item(temp);
+            for (int temp = 0; temp < nList.getLength(); temp++) {
 
-		System.out.println("\nCurrent Element :" + nNode.getNodeName());
+                Node nNode = nList.item(temp);
 
-		if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                System.out.println("\nCurrent Element :" + nNode.getNodeName());
 
-			Element eElement = (Element) nNode;
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
-			System.out.println("Jugador id : " + eElement.getAttribute("id"));
-			System.out.println("Nombre : " + eElement.getElementsByTagName("nombre").item(0).getTextContent());
-			System.out.println("Apellido : " + eElement.getElementsByTagName("apellido").item(0).getTextContent());
-			System.out.println("Nick  : " + eElement.getElementsByTagName("nick").item(0).getTextContent());
-			System.out.println("Puntos : " + eElement.getElementsByTagName("puntos").item(0).getTextContent());
+                    Element eElement = (Element) nNode;
 
-		}
-	}
-    } catch (ParserConfigurationException | SAXException | IOException | DOMException e) {
-    }
-        
+                    System.out.println("Jugador id : " + eElement.getAttribute("id"));
+                    System.out.println("Nombre : " + eElement.getElementsByTagName("nombre").item(0).getTextContent());
+                    System.out.println("Apellido : " + eElement.getElementsByTagName("apellido").item(0).getTextContent());
+                    System.out.println("Nick  : " + eElement.getElementsByTagName("nick").item(0).getTextContent());
+                    System.out.println("Puntos : " + eElement.getElementsByTagName("puntos").item(0).getTextContent());
+
+                }
+            }
+        } catch (ParserConfigurationException | SAXException | IOException | DOMException e) {
+        }
+
         launch(args);
     }
 
